@@ -34,9 +34,5 @@ function getCombinations(array $possibleValues)
 }
 
 
-$i=1;
-foreach(getConfigs() as $config) {
-    echo "[$i]\t" . implode(',', $config) . PHP_EOL;
-    ++$i;
-}
+return getConfigs();
 

@@ -1,6 +1,8 @@
 <?php
 $pdo = new PDO('sqlite:db/database');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$configs = iterator_to_array(include __DIR__."/generatePoints.php");
 ?>
 
 <!doctype html>
@@ -34,6 +36,11 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)"
         ) as $pokemon) {
             $strId = str_pad($pokemon['id'], 3, '0', STR_PAD_LEFT);
+
+            [$defense, $attack1, $attack2, $attack3, $pv] = $configs[$pokemon['rank'] % count($configs)];
+            $offset = 2 * ($pokemon['level'] - 1);
+            [$defense, $attack1, $attack2, $attack3, $pv] = [$defense + $offset, $attack1 + $offset, $attack2 + $offset, $attack3 + $offset, $pv + $offset];
+
             ?>
             <div class="">
                 <div class="card border-dark mb-3" style="width:21rem; height:29.7rem">
@@ -52,21 +59,21 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                         <hr>
                         <div class="row">
                             <div class="col-6 text-right">PV</div>
-                            <div class="col-6">10</div>
+                            <div class="col-6"><?= $pv ?></div>
 
                             <div class="col-6 text-right">Défense</div>
-                            <div class="col-6">10</div>
+                            <div class="col-6"><?= $defense ?></div>
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col-6 text-right">Attaque 1</div>
-                            <div class="col-6">10</div>
+                            <div class="col-6 text-right"><?= $pokemon['move1'] ?></div>
+                            <div class="col-6"><?= $attack1 ?></div>
 
-                            <div class="col-6 text-right">Attaque 1</div>
-                            <div class="col-6">10</div>
+                            <div class="col-6 text-right"><?= $pokemon['move2'] ?></div>
+                            <div class="col-6"><?= $attack2 ?></div>
 
-                            <div class="col-6 text-right">Attaque 1</div>
-                            <div class="col-6">10</div>
+                            <div class="col-6 text-right"><?= $pokemon['move3'] ?></div>
+                            <div class="col-6"><?= $attack3 ?></div>
                         </div>
                     </div>
                 </div>
