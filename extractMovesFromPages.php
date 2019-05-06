@@ -75,22 +75,6 @@ foreach ($pdo->query("SELECT id, name FROM pokemon WHERE level = 1") as [$id, $n
                     break;
                 }
             }
-//
-//            $moveNameEN = trim(
-//                $xpath->evaluate(
-//                    //"//div[@id='$moveTab']/div/div[1]/div[1]/table/tbody/tr[$row]/td[2]/a/text()"
-//                    "//div[@id='$moveTab']//a[contains(@class,'ent-name')]/text()"
-//                )[0]->textContent ?? ''
-//            );
-//            if ($moveNameEN == '') {
-//                break;
-//            }
-//            if (!isset($translations[$moveNameEN])) {
-//                echo "[$moveNameEN] Translation not found\n";
-//                exit;
-//            }
-//
-//            $selectedMoves[$moveNameEN] = $translations[$moveNameEN];
         }
     }
     echo implode(', ', $selectedMoves).PHP_EOL;
@@ -99,15 +83,13 @@ foreach ($pdo->query("SELECT id, name FROM pokemon WHERE level = 1") as [$id, $n
         die("Not enough attacks…\n");
     }
 
+    [$move1, $move2, $move3] = array_values($selectedMoves);
 
-    /*
-        $stmt->execute([
+    $updateStmt->execute([
             'id' => $id,
-            'name' => $name,
-            'path' => $path,
-            'level' => $level,
+            'move1' => $move1,
+            'move2' => $move2,
+            'move3' => $move3,
         ]);
-    */
-
 }
 
