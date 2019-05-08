@@ -29,6 +29,13 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
             }
         }
 
+        .card {
+            margin: auto;
+            margin-bottom: 1px;
+            width:21rem;
+            height:29.7rem
+        }
+
         .card-body {
             padding-top: 1px;
         }
@@ -70,14 +77,13 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
 
         ?>
         <div class="col">
-            <div class="card border-dark mb-3"
-                 style="margin: auto; margin-bottom: 1px; width:21rem; height:29.7rem">
+            <div class="card border-dark mb-3">
                 <div class="card-header bg-transparent">
                     <h5>
-                        <?= $pokemon['name'] ?>
+                        <b><?= $pokemon['name'] ?></b>
                         <small class="text-right text-muted"></small>
                         <span class="text-right float-right">
-                            <small style='font-family: "pokemon"'>PokeMath</small><small> #<?= $strId ?></small>
+                            <small style='font-family: "pokemon"'>PoKéMaTh</small><small> #<?= $strId ?></small>
                             </span>
 
                     </h5>
@@ -119,9 +125,28 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
         if ($currentCol === 0) {
             ?></div><?php
             $currentRow = ($currentRow + 1) %$nbPerRow;
-            if($currentRow === 0) {
-                ?>
-                <div style="page-break-after:always"></div><?php
+            if($currentRow === 0) {?>
+                <div style="page-break-after:always"></div>
+
+                <?php
+                // Back face
+                    for($row =0;$row<$nbPerRow; ++$row) {?>
+                    <div class="row align-items-center justify-content-center">
+                        <?php for($col=0;$col<$nbPerRow; ++$col) {?>
+                        <div class="col">
+                            <div class="card border-dark mb-3  align-middle text-center">
+                                    <div class="" style="width: 90%; top: 45%; margin: 0 auto; position: relative;">
+                                        <h1 style='font-family: "pokemon"'>
+                                            PoKéMaTh
+                                        </h1>
+                                    </div>
+                            </div>
+                        </div>
+                        <?php }?>
+                    </div>
+                    <?php } ?>
+                    <div style="page-break-after:always"></div>
+    <?php
             }
         }
     }
