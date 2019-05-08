@@ -6,7 +6,7 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style="font-size:73%;">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -23,7 +23,8 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
             body {
                 width: 21cm;
                 height: 29.7cm;
-                margin: 5mm 5mm 5mm 5mm;
+                margin: 0mm 0mm 0mm 0mm;
+                margin-top: 0 !important;
                 /* change the margins as you want them to be. */
             }
         }
@@ -36,6 +37,10 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
             margin-bottom: 0px;
         }
 
+        .col {
+            padding: 0px;
+        }
+
         @font-face {
             font-family: "pokemon";
             src: url('Pokemon Hollow.ttf');
@@ -45,67 +50,83 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
 </head>
 <body style="font-family: 'Roboto', sans-serif;">
 <div class="container-fluid">
-    <div class="row">
-        <?php
-        foreach ($pdo->query("SELECT pokemon.*, base.id as base_id, base.name as base_name from pokemon
+    <?php
+    $nbPerRow = 4;
+    $currentRow = 0;
+    $currentCol = 0;
+    foreach ($pdo->query("SELECT pokemon.*, base.id as base_id, base.name as base_name from pokemon
                 JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)"
-        ) as $pokemon) {
-            $strId = str_pad($pokemon['id'], 3, '0', STR_PAD_LEFT);
-            --$pokemon['level'];
+    ) as $pokemon) {
 
-            [$defense, $attack1, $attack2, $attack3, $pv] = $configs[$pokemon['rank'] % count($configs)];
-            $offset = 2 * $pokemon['level'];
-            [$defense, $attack1, $attack2, $attack3, $pv] = [$defense + $offset, $attack1 + $offset, $attack2 + $offset, $attack3 + $offset, $pv + $offset];
+        if ($currentCol === 0) {
+            ?><div class="row align-items-center justify-content-center"><?php
+        }
+        $strId = str_pad($pokemon['id'], 3, '0', STR_PAD_LEFT);
+        --$pokemon['level'];
 
-            ?>
-            <div class="">
-                <div class="card border-dark mb-3" style="width:21rem; height:29.7rem">
-                    <div class="card-header bg-transparent">
-                        <h5>
-                            <?= $pokemon['name'] ?>
-                            <small class="text-right text-muted"></small>
-                            <span class="text-right float-right">
-                            <small style='font-family: "pokemon"' >PokeMath</small><small> #<?= $strId ?></small>
+        [$defense, $attack1, $attack2, $attack3, $pv] = $configs[$pokemon['rank'] % count($configs)];
+        $offset = 2 * $pokemon['level'];
+        [$defense, $attack1, $attack2, $attack3, $pv] = [$defense + $offset, $attack1 + $offset, $attack2 + $offset, $attack3 + $offset, $pv + $offset];
+
+        ?>
+        <div class="col">
+            <div class="card border-dark mb-3"
+                 style="margin: auto; margin-bottom: 1px; width:21rem; height:29.7rem">
+                <div class="card-header bg-transparent">
+                    <h5>
+                        <?= $pokemon['name'] ?>
+                        <small class="text-right text-muted"></small>
+                        <span class="text-right float-right">
+                            <small style='font-family: "pokemon"'>PokeMath</small><small> #<?= $strId ?></small>
                             </span>
 
-                        </h5>
+                    </h5>
+                </div>
+
+                <img style="width:55%" src="<?= "images/$strId.png" ?>" class="card-img-top mx-auto"
+                     alt="<?= $pokemon['name'] ?>">
+                <small class="text-center">
+                    <em>
+                        <?= $pokemon['level'] ? ("{$pokemon['base_name']} / Niveau {$pokemon['level']} ") : 'Base' ?>
+                    </em>
+                </small>
+                <div class="card-body">
+
+                    <hr>
+                    <div class="row">
+                        <div class="offset-md-1 col-6 text-left">PV</div>
+                        <div class="col-5"><?= $pv ?></div>
+
+                        <div class="offset-md-1 col-6 text-left">Défense</div>
+                        <div class="col-3"><?= $defense ?></div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="offset-md-1 col-6 text-left"><?= $pokemon['move1'] ?></div>
+                        <div class="col-3"><?= $attack1 ?></div>
 
-                    <img style="width:55%" src="<?= "images/$strId.png" ?>" class="card-img-top mx-auto"
-                         alt="<?= $pokemon['name'] ?>">
-                    <small class="text-center">
-                        <em>
-                            <?= $pokemon['level'] ? ("{$pokemon['base_name']} / Niveau {$pokemon['level']} ") : 'Base' ?>
-                        </em>
-                    </small>
-                    <div class="card-body">
+                        <div class="offset-md-1 col-6 text-left"><?= $pokemon['move2'] ?></div>
+                        <div class="col-3"><?= $attack2 ?></div>
 
-                        <hr>
-                        <div class="row">
-                            <div class="offset-md-1 col-6 text-left">PV</div>
-                            <div class="col-5"><?= $pv ?></div>
-
-                            <div class="offset-md-1 col-6 text-left">Défense</div>
-                            <div class="col-3"><?= $defense ?></div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="offset-md-1 col-6 text-left"><?= $pokemon['move1'] ?></div>
-                            <div class="col-3"><?= $attack1 ?></div>
-
-                            <div class="offset-md-1 col-6 text-left"><?= $pokemon['move2'] ?></div>
-                            <div class="col-3"><?= $attack2 ?></div>
-
-                            <div class="offset-md-1 col-6 text-left"><?= $pokemon['move3'] ?></div>
-                            <div class="col-3"><?= $attack3 ?></div>
-                        </div>
+                        <div class="offset-md-1 col-6 text-left"><?= $pokemon['move3'] ?></div>
+                        <div class="col-3"><?= $attack3 ?></div>
                     </div>
                 </div>
             </div>
-            <?php
+        </div>
+        <?php
+        $currentCol = ($currentCol + 1) % $nbPerRow;
+        if ($currentCol === 0) {
+            ?></div><?php
+            $currentRow = ($currentRow + 1) %$nbPerRow;
+            if($currentRow === 0) {
+                ?>
+                <div style="page-break-after:always"></div><?php
+            }
         }
-        ?>
-    </div>
+    }
+    ?>
+</div>
 </div>
 
 </body>
