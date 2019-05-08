@@ -17,6 +17,7 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:700" rel="stylesheet">
 
     <style>
         @media print {
@@ -61,8 +62,10 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
     $nbPerRow = 4;
     $currentRow = 0;
     $currentCol = 0;
+    $paramLevel = intval($_GET['l'] ?? 1);
     foreach ($pdo->query("SELECT pokemon.*, base.id as base_id, base.name as base_name from pokemon
-                JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)"
+                JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)
+                WHERE pokemon.level = $paramLevel ORDER BY pokemon.path"
     ) as $pokemon) {
 
         if ($currentCol === 0) {
@@ -71,7 +74,7 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
         $strId = str_pad($pokemon['id'], 3, '0', STR_PAD_LEFT);
         --$pokemon['level'];
 
-        [$defense, $attack1, $attack2, $attack3, $pv] = $configs[$pokemon['rank'] % count($configs)];
+        [$defense, $attack1, $attack2, $attack3, $pv] = $configs[($pokemon['rank']-1) % count($configs)];
         $offset = 2 * $pokemon['level'];
         [$defense, $attack1, $attack2, $attack3, $pv] = [$defense + $offset, $attack1 + $offset, $attack2 + $offset, $attack3 + $offset, $pv + $offset];
 
@@ -80,7 +83,7 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
             <div class="card border-dark mb-3">
                 <div class="card-header bg-transparent">
                     <h5>
-                        <b><?= $pokemon['name'] ?></b>
+                        <span style="font-family: 'Open Sans', sans-serif;"><?= $pokemon['name'] ?></span>
                         <small class="text-right text-muted"></small>
                         <span class="text-right float-right">
                             <small style='font-family: "pokemon"'>PoKéMaTh</small><small> #<?= $strId ?></small>
