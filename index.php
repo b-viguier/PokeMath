@@ -63,11 +63,12 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
     $currentRow = 0;
     $currentCol = 0;
     $paramLevel = intval($_GET['l'] ?? 1);
+    $nbCards = 0;
     foreach ($pdo->query("SELECT pokemon.*, base.id as base_id, base.name as base_name from pokemon
                 JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)
                 WHERE pokemon.level = $paramLevel ORDER BY pokemon.path"
     ) as $pokemon) {
-
+        ++$nbCards;
         if ($currentCol === 0) {
             ?><div class="row align-items-center justify-content-center"><?php
         }
@@ -153,8 +154,32 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
             }
         }
     }
+
+    // Last back faces
+    $lastNbCards = $nbCards % ($nbPerRow*$nbPerRow) ?: ($nbPerRow*$nbPerRow) ;
+    $lastNbRows = intdiv($lastNbCards, $nbPerRow) + (($lastNbCards % $nbPerRow) ? 1 : 0);
     ?>
 </div>
+        <div style="page-break-after:always"></div>
+
+        <?php
+        // Back face
+        for($row =0;$row<$lastNbRows; ++$row) {?>
+            <div class="row align-items-center justify-content-center">
+                <?php for($col=0;$col<min($nbPerRow, $lastNbCards - $row*$nbPerRow); ++$col) {?>
+                    <div class="col">
+                        <div class="card border-dark mb-3  align-middle text-center">
+                            <div class="" style="width: 90%; top: 45%; margin: 0 auto; position: relative;">
+                                <h1 style='font-family: "pokemon"'>
+                                    PoKéMaTh
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                <?php }?>
+            </div>
+        <?php } ?>
+        <div style="page-break-after:always"></div>
 </div>
 
 </body>
