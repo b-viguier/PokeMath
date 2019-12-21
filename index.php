@@ -62,11 +62,11 @@ $configs = iterator_to_array(include __DIR__."/generatePoints.php");
     $nbPerRow = 4;
     $currentRow = 0;
     $currentCol = 0;
-    $paramLevel = intval($_GET['l'] ?? 1);
+    $paramLevel = intval($_GET['l'] ?? $argv[1] ?? 1);
     $nbCards = 0;
     foreach ($pdo->query("SELECT pokemon.*, base.id as base_id, base.name as base_name from pokemon
                 JOIN pokemon AS base ON base.id = CAST(SUBSTR(pokemon.path,2,3) AS decimal)
-                WHERE pokemon.level = $paramLevel ORDER BY pokemon.path"
+                WHERE pokemon.level IN ($paramLevel) ORDER BY pokemon.path"
     ) as $pokemon) {
         ++$nbCards;
         if ($currentCol === 0) {
